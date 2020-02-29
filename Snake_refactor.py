@@ -80,6 +80,9 @@ class Engine(object):
             self.snake.tick()
             self.snake.might_eat(self.food)
 
+            if self.snake.is_dead:
+                STOP = True
+
             time.sleep(0.1)
 
 class Drawable(object):
@@ -145,6 +148,8 @@ class Snake(object):
     def __init__(self, board):
         self.board = board
 
+        self.is_dead = False
+
         self.__body += [self.__head]
 
         self.__body.append(SnakeTail((4,5)))
@@ -152,6 +157,7 @@ class Snake(object):
 
     def tick(self):
         self.move(Engine.direction)
+        self.__self_collision()
 
     def move(self, direction):
         # Neue Richtung muss auf dem Kopf gesetzt werden.
@@ -177,6 +183,11 @@ class Snake(object):
     def __grow(self):
         self.__body.append(SnakeTail(self.__body[-1].coords))
 
+    def __self_collision(self):
+        # Bei 1 beginnend, da der Kopf an 0ter Stelle liegt
+        for i in range(1, len(self.__body)):
+            if self.__head.coords == self.__body[i].coords:
+                self.is_dead = True
 
 class Board(object):
     width = 100
