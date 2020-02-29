@@ -77,7 +77,7 @@ class Engine(object):
 
             self.food.tick()
 
-            self.snake.move(Engine.direction)
+            self.snake.tick()
             self.snake.might_eat(self.food)
 
             time.sleep(0.1)
@@ -149,6 +149,9 @@ class Snake(object):
 
         self.__body.append(SnakeTail((4,5)))
         self.__body.append(SnakeTail((3,5)))
+
+    def tick(self):
+        self.move(Engine.direction)
 
     def move(self, direction):
         # Neue Richtung muss auf dem Kopf gesetzt werden.
