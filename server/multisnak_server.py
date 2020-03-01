@@ -19,12 +19,15 @@ def main():
 
     print("DEBUG Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
 
-    data_dict = {
-        "state": "prepare",
-        "snake": [(2,3), (3,3)]
-    }
+    # data_dict = {
+    #     "state": "prepare",
+    #     "snake": [(2,3), (3,3)]
+    # }
 
-    client_connected.send(str.encode(json.dumps(data_dict)))
+    # client_connected.send(str.encode(json.dumps(data_dict)))
+
+    while True:
+        print("DEBUG user_input:", client_connected.recv(512).decode())
 
     client_connected.close()
 
