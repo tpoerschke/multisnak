@@ -158,6 +158,7 @@ class Snake(object):
     def tick(self):
         self.move(Engine.direction)
         self.__self_collision()
+        self.__board_collision()
 
     def move(self, direction):
         # Neue Richtung muss auf dem Kopf gesetzt werden.
@@ -182,6 +183,12 @@ class Snake(object):
     
     def __grow(self):
         self.__body.append(SnakeTail(self.__body[-1].coords))
+
+    def __board_collision(self):
+        # Überprüft, ob der Kopf der Schlange, den Rand erreicht hat
+        x, y = self.__head.coords
+        if x == 0 or x == Board.width - 1 or y == 0 or y == Board.height - 1:
+            self.is_dead = True
 
     def __self_collision(self):
         # Bei 1 beginnend, da der Kopf an 0ter Stelle liegt
