@@ -1,5 +1,6 @@
 # Eigene Ignores
 *.sync-conflict*
+.vscode
 
 # STANDARD PYTHON GITIGNORE
 # Byte-compiled / optimized / DLL files
