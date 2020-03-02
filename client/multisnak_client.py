@@ -14,10 +14,14 @@ class Client(object):
     direction = "right"
 
     def __init__(self):
+
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+
         self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
         self.input_thread.start() # TODO: Thread erst starten, wenn das Spiel startet
 
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+        self.reciever_thread = threading.Thread(target=self.__recieve_data)
+        self.reciever_thread.start()
 
         try:
             self.client_socket.connect(("localhost", 10028))
@@ -41,6 +45,16 @@ class Client(object):
         except (BrokenPipeError, OSError):
             print("ERROR Daten konnten nicht zum Server gesendet werden.")
 
+    def __recieve_data(self):
+        while True: # TODO: Vernünftige Abbruchbedingung
+            try:
+                recv = self.client_socket.recv(512)
+                if len(recv) == 0:
+                    break
+                print("DEBUG", recv.decode())
+            except OSError as err:
+                print("ERROR", err)
+
 def debug(msg):
     print(f"DEBUG {msg}")
 
@@ -48,6 +62,8 @@ def main():
     #signal.signal(signal.SIGINT, stop_program)
 
     Client()
+
+
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,8 @@ import socket
 import sys
 import json
 
+from Engine import Engine
+
 def main():
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -25,6 +27,9 @@ def main():
     # }
 
     # client_connected.send(str.encode(json.dumps(data_dict)))
+
+    ENGINE = Engine(client_connected)
+    ENGINE.start()
 
     while True:
         recv = client_connected.recv(512);
