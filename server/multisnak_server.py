@@ -27,7 +27,10 @@ def main():
     # client_connected.send(str.encode(json.dumps(data_dict)))
 
     while True:
-        print("DEBUG user_input:", client_connected.recv(512).decode())
+        recv = client_connected.recv(512);
+        if len(recv) == 0:
+            break
+        print("DEBUG user_input:", recv.decode())
 
     client_connected.close()
 
