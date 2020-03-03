@@ -1,32 +1,29 @@
 import socket
 import sys
-import json
+import json, yaml
 
 from Engine import Engine
 
+CONFIG = {}
+
 def main():
+    load_config("server.config.yaml")
+
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Bind und Listen
     try:
-        serverSocket.bind(("localhost", 10028))
+        serverSocket.bind(("localhost", CONFIG["port"]))
         serverSocket.listen()
     except socket.error as msg:
         print("ERROR " + str(msg))
         sys.exit()
 
-    print("DEBUG Warte auf eine Verbindungsanfrage")
+    debug("Warte auf eine Verbindungsanfrage")
 
     client_connected, client_address = serverSocket.accept()
 
-    print("DEBUG Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
-
-    # data_dict = {
-    #     "state": "prepare",
-    #     "snake": [(2,3), (3,3)]
-    # }
-
-    # client_connected.send(str.encode(json.dumps(data_dict)))
+    debug("Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
 
     ENGINE = Engine(client_connected)
     ENGINE.start()
@@ -38,9 +35,20 @@ def main():
         
         # In Zukunft validieren?
         ENGINE.direction = recv.decode()
-        print("DEBUG user_input:", recv.decode())
+        debug("user_input: " +recv.decode())
 
     client_connected.close()
+
+def debug(msg):
+    if CONFIG["debug"]:
+        print(f"DEBUG {msg}")
+
+def info(msg):
+    print(f"INFO {msg}")
+
+def load_config(filepath):
+    global CONFIG
+    CONFIG = yaml.load(open(filepath, "r"), Loader=yaml.SafeLoader)
 
 if __name__ == "__main__":
     main()
