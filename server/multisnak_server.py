@@ -35,6 +35,9 @@ def main():
         recv = client_connected.recv(512);
         if len(recv) == 0:
             break
+        
+        # In Zukunft validieren?
+        ENGINE.direction = recv.decode()
         print("DEBUG user_input:", recv.decode())
 
     client_connected.close()

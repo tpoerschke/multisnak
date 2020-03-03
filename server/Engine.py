@@ -31,7 +31,6 @@ class Engine(object):
 
     def tick(self):
         while not self.STOP:
-            print("DEBUG tick")
             #self.board.clear()
             #self.board.draw_frame()
 
