@@ -1,6 +1,7 @@
 import socket
 import sys
 import json, yaml
+import time
 
 from Engine import Engine
 
@@ -25,6 +26,21 @@ def main():
 
     debug("Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
 
+    try:
+        client_connected.send(str.encode("{\"state\": \"connect\", \"msg\": \"Das Spiel startet in Kürze...\"}"))
+        debug("Daten zum Client gesendet.")
+    except OSError as err:
+        print("WARNING", err)
+
+    time.sleep(5) # Das Verbinden anderer Spieler simulieren
+
+    try:
+        # Start-Mechanismen des Client anstoßen
+        client_connected.send(str.encode("{\"state\": \"prepare\"}"))
+        debug("Daten zum Client gesendet.")
+    except OSError as err:
+        print("WARNING", err)
+
     ENGINE = Engine(client_connected, CONFIG["engine"])
     ENGINE.start()
 
@@ -37,7 +53,7 @@ def main():
         ENGINE.direction = recv.decode()
         debug("user_input: " +recv.decode())
 
-    client_connected.close()
+    client_connected.close()    
 
 def debug(msg):
     if CONFIG["debug"]:

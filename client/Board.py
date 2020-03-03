@@ -39,8 +39,8 @@ class Board(object):
         sys.stdout.write(obj.symbol)
 
     def clear(self):
-        for i in range(Board.width):
-            for j in range(Board.height):
+        for i in range(1, Board.width - 1):
+            for j in range(1, Board.height - 1):
                 go_to_terminal_coords(i,j)
                 sys.stdout.write(" ")
         

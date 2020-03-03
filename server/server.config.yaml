@@ -2,3 +2,4 @@ port: 10028
 debug: True
 engine:
   ticksPerSecond: 10
+  debug: False

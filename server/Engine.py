@@ -50,7 +50,7 @@ class Engine(object):
     def __send_data(self):
         try:
             self.socket.send(str.encode(self.__build_json_str()))
-            print("DEBUG Daten zum Client gesendet.")
+            self.__debug("Daten zum Client gesendet.")
         except OSError as err:
             print("WARNING", err)
 
@@ -62,7 +62,12 @@ class Engine(object):
         draw = [{"coords": drawable.coords, "symbol": drawable.SYMBOL} for drawable in drawables]
 
         game_data = {
+            "state": "running" if not self.STOP else "stopped",
             "draw": draw
         }
 
         return json.dumps(game_data)
+
+    def __debug(self, msg):
+        if self.config["debug"]:
+            print(f"DEBUG {msg}")
