@@ -1,0 +1,4 @@
+server: 
+  ip: "localhost"
+  port: 10028
+debug: False

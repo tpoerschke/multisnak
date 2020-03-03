@@ -2,10 +2,12 @@ import socket
 import signal
 import threading
 import sys
-import json
+import json, yaml
 
 from user_input_handling import user_input_mapper
 from Board import Board
+
+CONFIG = {}
 
 class Client(object):
 
@@ -27,8 +29,8 @@ class Client(object):
         self.reciever_thread.start()
 
         try:
-            self.client_socket.connect(("localhost", 10028))
-            debug("Verbindung zum Server hergestellt!")
+            self.client_socket.connect((CONFIG["server"]["ip"], CONFIG["server"]["port"]))
+            info("Verbindung zum Server hergestellt!")
         except ConnectionRefusedError as err:
             print("ERROR Verbindung zum Server konnte nicht hergestellt werden.")
             self.client_socket.close()
@@ -54,7 +56,7 @@ class Client(object):
                 recv = self.client_socket.recv(2048)
                 if len(recv) == 0:
                     break
-                print("DEBUG", recv.decode())
+                #debug(recv.decode())
                 self.__display(json.loads(recv.decode()))
             except OSError as err:
                 print("ERROR", err)
@@ -66,11 +68,19 @@ class Client(object):
         sys.stdout.flush()
 
 def debug(msg):
-    print(f"DEBUG {msg}")
+    if CONFIG["debug"]:
+        print(f"DEBUG {msg}")
+
+def info(msg):
+    print(f"INFO {msg}")
+
+def load_config(filepath):
+    global CONFIG
+    CONFIG = yaml.load(open(filepath, "r"), Loader=yaml.SafeLoader)
 
 def main():
     #signal.signal(signal.SIGINT, stop_program)
-
+    load_config("client.config.yaml")
     Client()
 
 
