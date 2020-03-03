@@ -25,7 +25,7 @@ def main():
 
     debug("Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
 
-    ENGINE = Engine(client_connected)
+    ENGINE = Engine(client_connected, CONFIG["engine"])
     ENGINE.start()
 
     while True:

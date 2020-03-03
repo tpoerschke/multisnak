@@ -1,3 +1,4 @@
 port: 10028
-ticksPerSecond: 10
 debug: True
+engine:
+  ticksPerSecond: 10

@@ -12,7 +12,8 @@ class Engine(object):
     STOP = False
     direction = "right"
 
-    def __init__(self, socket : socket.socket):
+    def __init__(self, socket : socket.socket, config):
+        self.config = config
         # Später sollte die Engine eine liste aller Client-Threads bekommen
         self.socket = socket
 
@@ -44,7 +45,7 @@ class Engine(object):
 
             self.__send_data()
 
-            time.sleep(0.1)
+            time.sleep(1 / self.config["ticksPerSecond"])
 
     def __send_data(self):
         try:
