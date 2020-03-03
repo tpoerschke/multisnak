@@ -2,8 +2,10 @@ import socket
 import signal
 import threading
 import sys
+import json
 
 from user_input_handling import user_input_mapper
+from Board import Board
 
 class Client(object):
 
@@ -14,6 +16,7 @@ class Client(object):
     direction = "right"
 
     def __init__(self):
+        self.board = Board()
 
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
@@ -48,12 +51,19 @@ class Client(object):
     def __recieve_data(self):
         while True: # TODO: Vernünftige Abbruchbedingung
             try:
-                recv = self.client_socket.recv(512)
+                recv = self.client_socket.recv(2048)
                 if len(recv) == 0:
                     break
                 print("DEBUG", recv.decode())
+                self.__display(json.loads(recv.decode()))
             except OSError as err:
                 print("ERROR", err)
+
+    def __display(self, game_data):
+        self.board.clear()
+        for symbol in game_data["draw"]:
+            self.board.draw_symbol(symbol["coords"], symbol["symbol"])
+        sys.stdout.flush()
 
 def debug(msg):
     print(f"DEBUG {msg}")
