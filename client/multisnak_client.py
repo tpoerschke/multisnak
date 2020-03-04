@@ -5,13 +5,14 @@ import sys, os
 import json, yaml
 
 from user_input_handling import user_input_mapper
+from terminal_tools import *
 from Board import Board
 
 CONFIG = {}
 
 class Client(object):
 
-    STOP = False
+    STOP = True
 
     # Die aktuelle Richtung. Wird zum Server
     # geschickt, sobald das Attribut (neu)gesetzt wird.
@@ -23,7 +24,10 @@ class Client(object):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
         self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
-        self.reciever_thread = threading.Thread(target=self.__recieve_data)       
+        self.reciever_thread = threading.Thread(target=self.__recieve_data)  
+
+        # Um den Loop im reciever-Thread zu steuern
+        self.recieve_data = True     
 
         try:
             self.client_socket.connect((CONFIG["server"]["ip"], CONFIG["server"]["port"]))
@@ -44,9 +48,16 @@ class Client(object):
 
     def __start(self):
         # Wird ausgeführt, wenn der Server das "prepare" sendet
+        type(self).STOP = False
         self.input_thread.start()
         os.system("clear")
         self.board.draw_frame()
+
+    def stop(self, signum, frame):
+        Client.STOP = True
+        self.recieve_data = False
+        #go_to_terminal_coords(0, Board.height)
+        print("Spiel beendet. Pfeiltaste drücken...")
 
     def __send_user_input_to_server(self):
         try:
@@ -55,7 +66,7 @@ class Client(object):
             print("ERROR Daten konnten nicht zum Server gesendet werden.")
 
     def __recieve_data(self):
-        while True: # TODO: Vernünftige Abbruchbedingung
+        while self.recieve_data: 
             try:
                 recv = self.client_socket.recv(2048)
                 if len(recv) == 0:
@@ -64,7 +75,7 @@ class Client(object):
                 self.__handle_recieved_data(json.loads(recv.decode()))
             except (OSError, json.decoder.JSONDecodeError) as err:
                 print("ERROR", err)
-                print(recv.decode())
+                #print(recv.decode())
                 break
         self.client_socket.close()
 
@@ -84,11 +95,17 @@ class Client(object):
         elif state == "running":
             if "draw" in game_data:
                 self.__draw(game_data["draw"])
+        elif state == "stopped":
+            go_to_terminal_coords(0, Board.height)
+            print("GAME OVER")
+            Client.STOP = True
+            self.recieve_data = False
 
     def __draw(self, symbol_list):
         self.board.clear()
         for symbol in symbol_list:
             self.board.draw_symbol(symbol["coords"], symbol["symbol"])
+        go_to_terminal_coords(0, Board.height)
         sys.stdout.flush()
 
 def debug(msg):
@@ -103,9 +120,9 @@ def load_config(filepath):
     CONFIG = yaml.load(open(filepath, "r"), Loader=yaml.SafeLoader)
 
 def main():
-    #signal.signal(signal.SIGINT, stop_program)
     load_config("client.config.yaml")
-    Client()
+    client = Client()
+    signal.signal(signal.SIGINT, client.stop) 
 
 
 
