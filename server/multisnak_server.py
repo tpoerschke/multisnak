@@ -20,11 +20,17 @@ def main():
         print("ERROR " + str(msg))
         sys.exit()
 
-    debug("Warte auf eine Verbindungsanfrage")
+    info("Warte auf eine Verbindungsanfrage")
+    serverSocket.settimeout(CONFIG["connectionTimeout"])
+    debug(f"Wartezeit: {CONFIG['connectionTimeout']} Sekunden")
 
-    client_connected, client_address = serverSocket.accept()
-
-    debug("Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
+    try:
+        client_connected, client_address = serverSocket.accept()
+        debug("Akzeptiert eine Verbindungsanfrage von %s:%s" % (client_address[0], client_address[1]))
+    except socket.error as err:
+        info("Kein Spieler verbunden!")
+        serverSocket.close()
+        sys.exit()
 
     try:
         client_connected.send(str.encode("{\"state\": \"connect\", \"msg\": \"Das Spiel startet in Kürze...\"}"))
