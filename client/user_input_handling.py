@@ -23,17 +23,21 @@ def user_input_handler():
         while True:
             yield sys.stdin.read(3)
 
-# Deprecated
-def stop_program(signum, frame):
-    Engine.STOP = True
-    #go_to_terminal_coords(0, Board.height)
-    print("Spiel beendet. Pfeiltaste drücken...")
-
-def user_input_mapper(engine):
+def user_input_mapper(client):
+    opposite_list = [{"up", "down"}, {"left", "right"}]
     for c in user_input_handler():
-        if engine.STOP: break
-        if c == "\x1b[A": engine.direction = "up"
-        if c == "\x1b[C": engine.direction = "right"
-        if c == "\x1b[B": engine.direction = "down"
-        if c == "\x1b[D": engine.direction = "left"
+        if client.STOP: break
+
+        # Richtung über Pfeiltasten ermitteln
+        new_direction = ""
+        if c == "\x1b[A": new_direction = "up"
+        if c == "\x1b[C": new_direction = "right"
+        if c == "\x1b[B": new_direction = "down"
+        if c == "\x1b[D": new_direction = "left"
+
+        # Input validieren, damit der Spieler nicht umkehren kann
+        # (würde außerdem zum sofortigen Tod der Schlange führen)
+        if {client.direction, new_direction} not in opposite_list:
+            client.direction = new_direction
+
 
