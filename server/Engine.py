@@ -18,6 +18,8 @@ class Engine(object):
 
         self.board = Board()
         self.snake = Snake(self.board, player_list[0])
+        self.snake_list = []
+        self.snake_list.append(self.snake)
         self.food = Food(self.board)
 
         #self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
@@ -66,6 +68,13 @@ class Engine(object):
             "state": "running" if not self.STOP else "stopped",
             "draw": draw
         }
+
+        if not self.STOP:
+            scoreboard = {snake.player.name: len(snake) for snake in self.snake_list}
+            scoreboard["Spieler 2"] = 99999 # temp
+            scoreboard["Spieler 3"] = 99999 # temp
+            scoreboard["Spieler 4"] = 99999 # temp
+            game_data["scoreboard"] = scoreboard
 
         return json.dumps(game_data)
 

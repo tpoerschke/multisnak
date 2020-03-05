@@ -47,6 +47,9 @@ class Snake(object):
         self.body.append(SnakeTail((4,5)))
         self.body.append(SnakeTail((3,5)))
 
+    def __len__(self):
+        return len(self.body)
+
     def tick(self):
         self.move(self.player.requested_direction)
         self.__self_collision()

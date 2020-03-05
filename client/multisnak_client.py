@@ -68,7 +68,7 @@ class Client(object):
     def __recieve_data(self):
         while self.recieve_data: 
             try:
-                recv = self.client_socket.recv(2048)
+                recv = self.client_socket.recv(16384)
                 if len(recv) == 0:
                     break
                 #debug(recv.decode())
@@ -102,11 +102,26 @@ class Client(object):
             Client.STOP = True
             self.recieve_data = False
 
+        if "scoreboard" in game_data:
+            self.__display_scoreboard(game_data["scoreboard"])
+
     def __draw(self, symbol_list):
         self.board.clear()
         for symbol in symbol_list:
             self.board.draw_symbol(symbol["coords"], symbol["symbol"])
         go_to_terminal_coords(0, Board.height)
+        sys.stdout.flush()
+
+    def __display_scoreboard(self, scoreboard):
+        go_to_terminal_coords(0, Board.height + 1)
+        sys.stdout.write("SCOREBOARD")
+        col_width = 30
+        y = Board.height + 2
+        counter = 0
+        for key in scoreboard:
+            go_to_terminal_coords(0 if counter % 2 == 0 else col_width, y + counter // 2)
+            sys.stdout.write(f"{key}: {scoreboard[key]}".ljust(col_width))
+            counter += 1
         sys.stdout.flush()
 
 def debug(msg):
