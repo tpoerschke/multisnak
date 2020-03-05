@@ -69,12 +69,13 @@ class Snake(object):
         sys.stdout.flush()
 
     def might_eat(self, food : Food):
-        if food.coords == self.__head.coords:
-            food.eaten = True
-            self.__grow()
+        if not food.eaten and food.coords == self.__head.coords:
+            food.consume()
+            self.__grow(food.times_eaten)
     
-    def __grow(self):
-        self.body.append(SnakeTail(self.body[-1].coords))
+    def __grow(self, amount):
+        for _ in range(amount):
+            self.body.append(SnakeTail(self.body[-1].coords))
 
     def __board_collision(self):
         # Überprüft, ob der Kopf der Schlange, den Rand erreicht hat

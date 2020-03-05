@@ -12,13 +12,16 @@ class Food(Drawable):
 
         self.board = board
         self.eaten = True # Damit Essen direkt zufällig spawnt
+        self.times_eaten = 0
 
     def tick(self):
-        if not self.eaten:
-            pass
-            #self.board.draw(self)
-        else:
+        if self.eaten:
             self.__spawn()
+
+    def consume(self):
+        if not self.eaten:
+            self.eaten = True
+            self.times_eaten += 1
 
     def __spawn(self):
         # Board.width - 2 -> auf Board.width - 1 liegt der Rahmen

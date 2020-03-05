@@ -47,6 +47,8 @@ class Engine(object):
             time.sleep(1 / self.config["ticksPerSecond"])
 
     def __send_data(self):
+        # TODO: GameData aufteilen und pro Schlange senden?
+        # -> Falls Anzahl an Bytes zu groß werden
         try:
             self.socket.send(str.encode(self.__build_json_str()))
             self.__debug("Daten zum Client gesendet.")
