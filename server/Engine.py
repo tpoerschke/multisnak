@@ -10,15 +10,14 @@ from Snake import Snake, SnakeTail
 class Engine(object):
 
     STOP = False
-    direction = "right"
 
-    def __init__(self, socket : socket.socket, config):
+    def __init__(self, player_list, config):
         self.config = config
-        # Später sollte die Engine eine liste aller Client-Threads bekommen
-        self.socket = socket
+        self.player_list = player_list
+        self.socket = player_list[0].socket # temporär
 
         self.board = Board()
-        self.snake = Snake(self.board, self)
+        self.snake = Snake(self.board, player_list[0])
         self.food = Food(self.board)
 
         #self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))

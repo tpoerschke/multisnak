@@ -36,9 +36,9 @@ class Snake(object):
     __head = SnakeHead((5,5), "right")
     body = []
 
-    def __init__(self, board, engine):
+    def __init__(self, board, player):
         self.board = board
-        self.engine = engine
+        self.player = player
 
         self.is_dead = False
 
@@ -48,8 +48,7 @@ class Snake(object):
         self.body.append(SnakeTail((3,5)))
 
     def tick(self):
-        # TODO: self.engine durch Spieler ersetzen 
-        self.move(self.engine.direction)
+        self.move(self.player.requested_direction)
         self.__self_collision()
         self.__board_collision()
 
