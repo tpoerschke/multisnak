@@ -1,5 +1,5 @@
-from terminal_tools import *
-from Drawable import Drawable
+from .terminal_tools import *
+from .Drawable import Drawable
 
 class Board(object):
     width = 100

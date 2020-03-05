@@ -1,0 +1,1 @@
+from .multisnak_client import load_config, Client

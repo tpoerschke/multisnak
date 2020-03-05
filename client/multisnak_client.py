@@ -4,9 +4,9 @@ import threading
 import sys, os
 import json, yaml
 
-from user_input_handling import user_input_mapper
-from terminal_tools import *
-from Board import Board
+from .user_input_handling import user_input_mapper
+from .terminal_tools import *
+from .Board import Board
 
 CONFIG = {}
 
@@ -74,9 +74,10 @@ class Client(object):
                 #debug(recv.decode())
                 self.__handle_recieved_data(json.loads(recv.decode()))
             except (OSError, json.decoder.JSONDecodeError) as err:
+                go_to_terminal_coords(0, Board.height)
                 print("ERROR", err)
                 #print(recv.decode())
-                break
+                #break
         self.client_socket.close()
 
     def __handle_recieved_data(self, game_data):
@@ -118,13 +119,3 @@ def info(msg):
 def load_config(filepath):
     global CONFIG
     CONFIG = yaml.load(open(filepath, "r"), Loader=yaml.SafeLoader)
-
-def main():
-    load_config("client.config.yaml")
-    client = Client()
-    signal.signal(signal.SIGINT, client.stop) 
-
-
-
-if __name__ == "__main__":
-    main()
