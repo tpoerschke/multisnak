@@ -7,6 +7,7 @@ import json, yaml
 from .user_input_handling import user_input_mapper
 from .terminal_tools import *
 from .Board import Board
+from .Scoreboard import Scoreboard
 
 CONFIG = {}
 
@@ -20,6 +21,7 @@ class Client(object):
 
     def __init__(self):
         self.board = Board()
+        self.scoreboard = Scoreboard()
 
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
@@ -112,17 +114,8 @@ class Client(object):
         go_to_terminal_coords(0, Board.height)
         sys.stdout.flush()
 
-    def __display_scoreboard(self, scoreboard):
-        go_to_terminal_coords(0, Board.height + 1)
-        sys.stdout.write("SCOREBOARD")
-        col_width = 30
-        y = Board.height + 2
-        counter = 0
-        for key in scoreboard:
-            go_to_terminal_coords(0 if counter % 2 == 0 else col_width, y + counter // 2)
-            sys.stdout.write(f"{key}: {scoreboard[key]}".ljust(col_width))
-            counter += 1
-        sys.stdout.flush()
+    def __display_scoreboard(self, scoreboard_data):
+        self.scoreboard.draw(scoreboard_data)
 
 def debug(msg):
     if CONFIG["debug"]:
