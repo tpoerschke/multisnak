@@ -14,12 +14,9 @@ class Engine(object):
     def __init__(self, player_list, config):
         self.config = config
         self.player_list = player_list
-        self.socket = player_list[0].socket # temporär
 
         self.board = Board()
-        self.snake = Snake(self.board, player_list[0])
-        self.snake_list = []
-        self.snake_list.append(self.snake)
+        self.snake_list = [Snake(self.board, player) for player in self.player_list]
         self.food = Food(self.board)
 
         #self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
@@ -38,10 +35,11 @@ class Engine(object):
 
             self.food.tick()
 
-            self.snake.tick()
-            self.snake.might_eat(self.food)
+            for snake in self.snake_list:
+                snake.tick()
+                snake.might_eat(self.food)
 
-            if self.snake.is_dead:
+            if len(list(filter(lambda snake: not snake.is_dead, self.snake_list))) <= 1:
                 self.STOP = True
 
             self.__send_data()
@@ -52,14 +50,17 @@ class Engine(object):
         # TODO: GameData aufteilen und pro Schlange senden?
         # -> Falls Anzahl an Bytes zu groß werden
         try:
-            self.socket.send(str.encode(self.__build_json_str()))
-            self.__debug("Daten zum Client gesendet.")
+            data = str.encode(self.__build_json_str())
+            for player in self.player_list:
+                player.socket.send(data)
+                self.__debug("Daten zum Client gesendet.")
         except OSError as err:
             print("WARNING", err)
 
     def __build_json_str(self):
         drawables = []
-        drawables.extend(self.snake.body)
+        for snake in self.snake_list:
+            drawables.extend(snake.body)
         drawables.append(self.food)
 
         draw = [{"coords": drawable.coords, "symbol": drawable.SYMBOL} for drawable in drawables]
@@ -70,11 +71,7 @@ class Engine(object):
         }
 
         if not self.STOP:
-            scoreboard = {snake.player.name: len(snake) for snake in self.snake_list}
-            scoreboard["Spieler 2"] = 99999 # temp
-            scoreboard["Spieler 3"] = 99999 # temp
-            scoreboard["Spieler 4"] = 99999 # temp
-            game_data["scoreboard"] = scoreboard
+            game_data["scoreboard"] = {snake.player.name: len(snake) for snake in self.snake_list}
 
         return json.dumps(game_data)
 

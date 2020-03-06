@@ -33,12 +33,12 @@ class SnakeHead(SnakeTail):
 
 class Snake(object):
 
-    __head = SnakeHead((5,5), "right")
-    body = []
-
     def __init__(self, board, player):
         self.board = board
         self.player = player
+
+        self.__head = SnakeHead((5,5), "right")
+        self.body = []
 
         self.is_dead = False
 
@@ -51,9 +51,10 @@ class Snake(object):
         return len(self.body)
 
     def tick(self):
-        self.move(self.player.requested_direction)
-        self.__self_collision()
-        self.__board_collision()
+        if not self.is_dead:
+            self.move(self.player.requested_direction)
+            self.__self_collision()
+            self.__board_collision()
 
     def move(self, direction):
         # Neue Richtung muss auf dem Kopf gesetzt werden.
