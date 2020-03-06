@@ -3,9 +3,9 @@ import threading, time
 import json
 import socket
 
-from Board import Board
-from Food import Food
-from Snake import Snake, SnakeTail
+from .Board import Board
+from .Food import Food
+from .Snake import Snake, SnakeTail
 
 class Engine(object):
 
@@ -39,7 +39,9 @@ class Engine(object):
                 snake.tick()
                 snake.might_eat(self.food)
 
-            if len(list(filter(lambda snake: not snake.is_dead, self.snake_list))) <= 1:
+            snakes_alive_count = len(list(filter(lambda snake: not snake.is_dead, self.snake_list)))
+            # Der zweite Teil der Abfrage, macht den Singleplayer-Modus möglich
+            if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):
                 self.STOP = True
 
             self.__send_data()

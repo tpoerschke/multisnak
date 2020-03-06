@@ -1,0 +1,1 @@
+from .multisnak_server import Server, load_config

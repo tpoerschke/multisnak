@@ -1,8 +1,8 @@
 import sys
 
-from Drawable import Drawable
-from Food import Food
-from Board import Board
+from .Drawable import Drawable
+from .Food import Food
+from .Board import Board
 
 class SnakeTail(Drawable):
     

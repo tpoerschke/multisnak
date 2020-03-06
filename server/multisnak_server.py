@@ -3,8 +3,8 @@ import sys
 import json, yaml
 import time, threading
 
-from Engine import Engine
-from Player import Player
+from .Engine import Engine
+from .Player import Player
 
 CONFIG = {}
 
@@ -100,12 +100,6 @@ class Server(object):
 
         info("Spiel gestartet")
 
-def main():
-    load_config("server.config.yaml")
-    server = Server()
-    server.connect_clients()
-    server.do_game_loop()
-
 def debug(msg):
     if CONFIG["debug"]:
         print(f"DEBUG {msg}")
@@ -116,6 +110,3 @@ def info(msg):
 def load_config(filepath):
     global CONFIG
     CONFIG = yaml.load(open(filepath, "r"), Loader=yaml.SafeLoader)
-
-if __name__ == "__main__":
-    main()

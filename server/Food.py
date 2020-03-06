@@ -1,7 +1,7 @@
 import random
 
-from Board import Board
-from Drawable import Drawable
+from .Board import Board
+from .Drawable import Drawable
 
 class Food(Drawable):
     
