@@ -37,15 +37,16 @@ class Snake(object):
         self.board = board
         self.player = player
 
-        self.__head = SnakeHead((5,5), "right")
+        self.__head = SnakeHead((5,5 + (self.player.id * 2)), "right")
         self.body = []
 
         self.is_dead = False
+        self.frozen = False # Wird momentan lediglich zum debug verwendet
 
         self.body += [self.__head]
 
-        self.body.append(SnakeTail((4,5)))
-        self.body.append(SnakeTail((3,5)))
+        self.body.append(SnakeTail((4,5 + (self.player.id * 2))))
+        self.body.append(SnakeTail((3,5 + (self.player.id * 2))))
 
     def __len__(self):
         return len(self.body)
@@ -57,6 +58,7 @@ class Snake(object):
             self.__board_collision()
 
     def move(self, direction):
+        if self.frozen: return
         # Neue Richtung muss auf dem Kopf gesetzt werden.
         # Zuvor jedoch muss die vorhandene Richtung jeweils
         # um ein Körperteil nach hinten gereicht werden, 
@@ -81,6 +83,13 @@ class Snake(object):
         for _ in range(amount):
             self.body.append(SnakeTail(self.body[-1].coords))
 
+    def snake_collision(self, snake_list):
+        for other_snake in snake_list:
+            if other_snake is not self and any(filter(lambda part: part.coords == self.__head.coords, other_snake.body)):
+                self.is_dead = True
+                print(self.player.name + " ist tot!")
+                break
+
     def __board_collision(self):
         # Überprüft, ob der Kopf der Schlange, den Rand erreicht hat
         x, y = self.__head.coords
@@ -92,3 +101,4 @@ class Snake(object):
         for i in range(1, len(self.body)):
             if self.__head.coords == self.body[i].coords:
                 self.is_dead = True
+                break

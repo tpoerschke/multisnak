@@ -19,6 +19,9 @@ class Engine(object):
         self.snake_list = [Snake(self.board, player) for player in self.player_list]
         self.food = Food(self.board)
 
+        # Flag setzen, damit sich die Schlange nicht bewegt (Debug / temporär)
+        if len(self.snake_list) >= 2: self.snake_list[1].frozen = True
+            
         #self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
         self.tick_thread = threading.Thread(target=self.tick)
 
@@ -35,13 +38,16 @@ class Engine(object):
 
             self.food.tick()
 
-            for snake in self.snake_list:
+            snakes_alive = list(filter(lambda snake: not snake.is_dead, self.snake_list))
+            for snake in snakes_alive:
                 snake.tick()
+                snake.snake_collision(snakes_alive)
                 snake.might_eat(self.food)
-
-            snakes_alive_count = len(list(filter(lambda snake: not snake.is_dead, self.snake_list)))
+    
+            snakes_alive_count = len(snakes_alive)
             # Der zweite Teil der Abfrage, macht den Singleplayer-Modus möglich
             if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):
+            #if (snakes_alive_count < 1):
                 self.STOP = True
 
             self.__send_data()
