@@ -107,10 +107,24 @@ class Client(object):
         if "scoreboard" in game_data:
             self.__display_scoreboard(game_data["scoreboard"])
 
-    def __draw(self, symbol_list):
+    def __draw(self, draw):
         self.board.clear()
-        for symbol in symbol_list:
-            self.board.draw_symbol(symbol["coords"], symbol["symbol"])
+        
+        SNAKE_SYMBOL = "O"
+        FOOD_SYMBOL = "+"
+
+        # Schlangen zeichnen
+        for snake_key in draw["snakes"]:
+            coords = draw["snakes"][snake_key]
+            for x, y in coords:
+                go_to_terminal_coords(x, y)
+                sys.stdout.write(SNAKE_SYMBOL)
+        
+        # Essen zeichnen
+        x, y = draw["food"]
+        go_to_terminal_coords(x, y)
+        sys.stdout.write(FOOD_SYMBOL)
+
         go_to_terminal_coords(0, Board.height)
         sys.stdout.flush()
 

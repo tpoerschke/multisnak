@@ -66,12 +66,13 @@ class Engine(object):
             print("WARNING", err)
 
     def __build_json_str(self):
-        drawables = []
-        for snake in self.snake_list:
-            drawables.extend(snake.body)
-        drawables.append(self.food)
+        draw = {}
 
-        draw = [{"coords": drawable.coords, "symbol": drawable.SYMBOL} for drawable in drawables]
+        draw["snakes"] = {}
+        for snake in self.snake_list:
+            draw["snakes"][snake.player.id] = [body.coords for body in snake.body]
+        
+        draw["food"] = self.food.coords
 
         game_data = {
             "state": "running" if not self.STOP else "stopped",
