@@ -3,6 +3,7 @@ import sys
 from .Drawable import Drawable
 from .Food import Food
 from .Board import Board
+from .Player import Player
 
 class SnakeTail(Drawable):
     
@@ -37,7 +38,10 @@ class Snake(object):
         self.board = board
         self.player = player
 
-        self.__head = SnakeHead((5,5 + (self.player.id * 2)), "right")
+        # TODO: Spawn-Positionen relativ zum Kopf vorhalten, damit auch woanders gespawnt werden kann ?
+        self.__spawn_positions = [(5,5 + (self.player.id * 2)), (4,5 + (self.player.id * 2)), (3,5 + (self.player.id * 2))]
+
+        self.__head = SnakeHead(self.__spawn_positions[0], "right")
         self.body = []
 
         self.is_dead = False
@@ -45,8 +49,8 @@ class Snake(object):
 
         self.body += [self.__head]
 
-        self.body.append(SnakeTail((4,5 + (self.player.id * 2))))
-        self.body.append(SnakeTail((3,5 + (self.player.id * 2))))
+        self.body.append(SnakeTail(self.__spawn_positions[1]))
+        self.body.append(SnakeTail(self.__spawn_positions[2]))
 
     def __len__(self):
         return len(self.body)
@@ -82,6 +86,22 @@ class Snake(object):
     def __grow(self, amount):
         for _ in range(amount):
             self.body.append(SnakeTail(self.body[-1].coords))
+
+    def respawn(self):
+        # Den Körper, um 10 Elemente verkleinern
+        new_body = self.body[:-10]
+        if len(new_body) < 3:
+            new_body = self.body[:3]
+        self.body = new_body
+
+        # Neu positionieren
+        for i in range(len(self)):
+            self.body[i].coords = self.__spawn_positions[i] if i < len(self.__spawn_positions) else self.__spawn_positions[-1]
+        
+        # Richtung zurücksetzen
+        self.player.requested_direction = Player.DEFAULT_DIRECTION
+
+        self.is_dead = False
 
     def snake_collision(self, snake_list):
         for other_snake in snake_list:

@@ -39,16 +39,21 @@ class Engine(object):
             self.food.tick()
 
             snakes_alive = list(filter(lambda snake: not snake.is_dead, self.snake_list))
-            for snake in snakes_alive:
-                snake.tick()
-                snake.snake_collision(snakes_alive)
-                snake.might_eat(self.food)
+
+            for snake in self.snake_list:
+                if not snake.is_dead:
+                    snake.tick()
+                    snake.snake_collision(snakes_alive)
+                    snake.might_eat(self.food)
+                elif len(self.snake_list) > 1:
+                    # respawn, wenn multiplayer
+                    snake.respawn()
     
             snakes_alive_count = len(snakes_alive)
             # Der zweite Teil der Abfrage, macht den Singleplayer-Modus möglich
-            if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):
-            #if (snakes_alive_count < 1):
-                self.STOP = True
+            # TODO: Diese Abfrage überarbeiten! 
+            #if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):
+            #    self.STOP = True
 
             self.__send_data()
 
