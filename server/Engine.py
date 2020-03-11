@@ -52,8 +52,9 @@ class Engine(object):
             snakes_alive_count = len(snakes_alive)
             # Der zweite Teil der Abfrage, macht den Singleplayer-Modus möglich
             # TODO: Diese Abfrage überarbeiten! 
-            #if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):
-            #    self.STOP = True
+            #if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):#
+            if snakes_alive_count < 1: # Server stoppt nur im Singleplayer-Modus momentan
+                self.STOP = True
 
             self.__send_data()
 
