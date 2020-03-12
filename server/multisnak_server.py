@@ -62,12 +62,13 @@ class Server(object):
             except socket.error as err:
                 print("WARNING Fehler bei der Verbindung mit Spieler " + str(len(self.player_list) + 1) + "!")
 
+        for t in player_con_threads: t.join()
+
         if len(self.player_list) == 0:
             info("Kein Spieler verbunden!")
             self.serverSocket.close()
             sys.exit()
         else:
-            for t in player_con_threads: t.join()
             info(str(len(self.player_list)) + " Spieler verbunden!")
             time.sleep(5) 
 
