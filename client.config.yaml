@@ -1,4 +1,10 @@
 server: 
   ip: "localhost"
   port: 10028
+colors:
+  showColors: True
+  player1: "cyan"
+  player2: "green"
+  player3: "magenta"
+  player4: "yellow"
 debug: False

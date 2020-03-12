@@ -3,6 +3,7 @@ import signal
 import threading
 import sys, os
 import json, yaml
+from termcolor import colored
 
 from .user_input_handling import user_input_mapper
 from .terminal_tools import *
@@ -118,7 +119,7 @@ class Client(object):
             coords = draw["snakes"][snake_key]
             for x, y in coords:
                 go_to_terminal_coords(x, y)
-                sys.stdout.write(SNAKE_SYMBOL)
+                sys.stdout.write(colored(SNAKE_SYMBOL, CONFIG["colors"][f"player{snake_key}"]) if CONFIG["colors"]["showColors"] else SNAKE_SYMBOL)
         
         # Essen zeichnen
         x, y = draw["food"]
