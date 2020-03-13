@@ -76,7 +76,7 @@ class Snake(object):
         self.__head.move(direction)
         #self.board.draw(self.__head)
 
-        sys.stdout.flush()
+        #sys.stdout.flush()
 
     def might_eat(self, food : Food):
         if not food.eaten and food.coords == self.__head.coords:
@@ -108,6 +108,12 @@ class Snake(object):
             if other_snake is not self and any(filter(lambda part: part.coords == self.__head.coords, other_snake.body)):
                 self.is_dead = True
                 print(self.player.name + " ist tot!")
+                break
+
+    def level_collision(self, level):
+        for x, y in level["blocked"]:
+            if (x, y) == self.__head.coords:
+                self.is_dead = True
                 break
 
     def __board_collision(self):

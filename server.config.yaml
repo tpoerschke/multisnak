@@ -2,5 +2,9 @@ port: 10028
 connectionTimeout: 10
 debug: True
 engine:
+  secondsPerLevel: 60
+  levels: 
+    - level1
+    - theSimpleOne
   ticksPerSecond: 10
   debug: False

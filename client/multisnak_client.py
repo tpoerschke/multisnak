@@ -112,6 +112,7 @@ class Client(object):
         self.board.clear()
         
         SNAKE_SYMBOL = "O"
+        BLOCKED_SYMBOL = "#"
         FOOD_SYMBOL = "+"
 
         # Schlangen zeichnen
@@ -121,6 +122,11 @@ class Client(object):
                 go_to_terminal_coords(x, y)
                 sys.stdout.write(colored(SNAKE_SYMBOL, CONFIG["colors"][f"player{snake_key}"]) if CONFIG["colors"]["showColors"] else SNAKE_SYMBOL)
         
+        # Blockierte Felder zeichnen
+        for x, y in draw["blocked"]:
+            go_to_terminal_coords(x, y)
+            sys.stdout.write(BLOCKED_SYMBOL)
+
         # Essen zeichnen
         x, y = draw["food"]
         go_to_terminal_coords(x, y)

@@ -3,6 +3,7 @@ import threading, time
 import json
 import socket
 
+from .LevelManager import LevelManager
 from .Board import Board
 from .Food import Food
 from .Snake import Snake, SnakeTail
@@ -15,6 +16,8 @@ class Engine(object):
         self.config = config
         self.player_list = player_list
 
+        self.level_manager = LevelManager()
+
         self.board = Board()
         self.snake_list = [Snake(self.board, player) for player in self.player_list]
         self.food = Food(self.board)
@@ -26,9 +29,9 @@ class Engine(object):
         self.tick_thread = threading.Thread(target=self.tick)
 
     def start(self):
-        #os.system("clear")
+        self.level_manager.load_levels(self.config["levels"])
+        self.level_manager.next_level() # Das 1. Level laden
 
-        #self.input_thread.start()
         self.tick_thread.start()
 
     def tick(self):
@@ -44,6 +47,7 @@ class Engine(object):
                 if not snake.is_dead:
                     snake.tick()
                     snake.snake_collision(snakes_alive)
+                    snake.level_collision(self.level_manager.current_level)
                     snake.might_eat(self.food)
                 elif len(self.snake_list) > 1:
                     # respawn, wenn multiplayer
@@ -78,6 +82,7 @@ class Engine(object):
         for snake in self.snake_list:
             draw["snakes"][snake.player.id] = [body.coords for body in snake.body]
         
+        draw["blocked"] = self.level_manager.current_level["blocked"]
         draw["food"] = self.food.coords
 
         game_data = {
