@@ -75,7 +75,7 @@ class Client(object):
                 if len(recv) == 0:
                     break
                 #debug(recv.decode())
-                self.__handle_recieved_data(json.loads(recv.decode()))
+                self.__handle_recieved_data(json.loads(recv.decode().split("%%")[0]))
             except (OSError, json.decoder.JSONDecodeError) as err:
                 go_to_terminal_coords(0, Board.height)
                 print("ERROR", err)

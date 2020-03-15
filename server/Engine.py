@@ -68,7 +68,9 @@ class Engine(object):
         # TODO: GameData aufteilen und pro Schlange senden?
         # -> Falls Anzahl an Bytes zu groß werden
         try:
-            data = str.encode(self.__build_json_str())
+            # %% dient dem Client zur Detektion, wann das JSON-Dokument zu ende ist.
+            # So wird ein "Extra data"-Error verhindert beim Client
+            data = str.encode(self.__build_json_str() + "%%")
             for player in self.player_list:
                 player.socket.send(data)
                 self.__debug("Daten zum Client gesendet.")
