@@ -88,7 +88,8 @@ class Client(object):
         # 1) connect -> Verbindungsaufbau
         # 2) prepare -> Spielfeld wird gezeichnet, Input-Thread wird gestartet usw.
         # 3) running
-        # 4) stopped
+        # 4) nextlevel -> kurz pausiert (nächstes Level)
+        # 5) stopped
         state = game_data["state"]
 
         if state == "connect":
@@ -99,6 +100,8 @@ class Client(object):
         elif state == "running":
             if "draw" in game_data:
                 self.__draw(game_data["draw"])
+        elif state == "nextlevel":
+            self.__next_level(game_data["levelName"])
         elif state == "stopped":
             go_to_terminal_coords(0, Board.height)
             print("GAME OVER")
@@ -133,6 +136,17 @@ class Client(object):
         sys.stdout.write(FOOD_SYMBOL)
 
         go_to_terminal_coords(0, Board.height)
+        sys.stdout.flush()
+    
+    def __next_level(self, levelname):
+        nextlvl = "Nächstes Level:"
+        length = max([len(levelname), len(nextlvl)])
+        go_to_terminal_coords(2, 2)
+        sys.stdout.write("=" * length)
+        go_to_terminal_coords(2, 3)
+        sys.stdout.write(nextlvl)
+        go_to_terminal_coords(2, 4)
+        sys.stdout.write("=" * length)
         sys.stdout.flush()
 
     def __display_scoreboard(self, scoreboard_data):

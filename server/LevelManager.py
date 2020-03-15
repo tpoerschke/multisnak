@@ -16,6 +16,7 @@ class LevelManager(object):
 
     def load_levels(self, level_list):
         # Level aus den entsprechenden Dateien laden
+        # ACHTUNG: 2x dasselbe Level funktioniert nicht, da der Eintrag im dict überschrieben wird
         for level in level_list:
             with open(self.__LEVEL_PATH + level + self.__LEVEL_FORMAT, "r") as file:
                 self.levels[level] = json.load(file)
@@ -25,9 +26,11 @@ class LevelManager(object):
 
     def next_level(self):
         self.current_level_index += 1
-        self.current_level = self.levels[list(self.levels.keys())[self.current_level_index]]
 
-        # TODO: Return False, wenn kein neues Level mehr geladen werden kann
+        if self.current_level_index >= len(list(self.levels.keys())):
+            return False
+            
+        self.current_level = self.levels[list(self.levels.keys())[self.current_level_index]]
         return True
 
     
