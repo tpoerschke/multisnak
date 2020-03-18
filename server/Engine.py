@@ -22,7 +22,7 @@ class Engine(object):
 
         self.board = Board()
         self.snake_list = [Snake(self.board, player) for player in self.player_list]
-        self.food = Food(self.board)
+        self.food = Food(self.board, self)
 
         # Flag setzen, damit sich die Schlange nicht bewegt (Debug / temporär)
         if len(self.snake_list) >= 2: self.snake_list[1].frozen = True
@@ -65,7 +65,7 @@ class Engine(object):
             # Der zweite Teil der Abfrage, macht den Singleplayer-Modus möglich
             # TODO: Diese Abfrage überarbeiten! 
             #if (len(self.snake_list) > 1 and snakes_alive_count <= 1) or (snakes_alive_count < 1):#
-            if snakes_alive_count < 1: # Server stoppt nur im Singleplayer-Modus momentan
+            if snakes_alive_count < 1 and len(self.snake_list) == 1: # Server stoppt nur im Singleplayer-Modus momentan
                 self.STOP = True
                 self.state = "stopped"
 
@@ -88,6 +88,7 @@ class Engine(object):
 
     def __load_next_level(self):
         next_level_loaded = self.level_manager.next_level()
+        self.__debug(f"Nächstes Level geladen: {next_level_loaded}")
         self.seconds_in_level = 0
         if next_level_loaded:
             time.sleep(5)
