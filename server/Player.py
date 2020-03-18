@@ -20,7 +20,7 @@ class Player(object):
                 if len(recv) == 0:
                     break
                 
-                # In Zukunft validieren?
+                # Wird in SnakeHead.move validiert
                 self.requested_direction = recv.decode()
                 #debug("user_input: " + recv.decode())
 

@@ -18,16 +18,23 @@ class SnakeTail(Drawable):
 class SnakeHead(SnakeTail):
     def __init__(self, coords, direction):
         super().__init__(coords)
+        self.direction = direction
 
     def move(self, new_direction):
+        # Überprüfen, ob die Schlange umkehren soll und dies ggf.
+        # verhindern. Sonst würde die Schlange sterben...
+        opposite_list = [{"up", "down"}, {"left", "right"}]
+        if {self.direction, new_direction} not in opposite_list:
+            self.direction = new_direction
+
         x, y = self.coords
-        if new_direction == "up":
+        if self.direction == "up":
             y = y - 1
-        elif new_direction == "right":
+        elif self.direction == "right":
             x = x + 1
-        elif new_direction == "down":
+        elif self.direction == "down":
             y = y + 1
-        elif new_direction == "left":
+        elif self.direction == "left":
             x = x - 1
 
         self.coords = (x, y)
