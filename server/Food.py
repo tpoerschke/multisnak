@@ -30,7 +30,9 @@ class Food(Drawable):
         # Selbiges gilt für die Höhe
         self.coords = (random.randrange(1, Board.width - 2), random.randrange(1, Board.height - 2))
 
-        while self.coords in self.engine.level_manager.current_level["blocked"]:
+
+        while list(self.coords) in self.engine.level_manager.current_level["blocked"]:
             self.coords = (random.randrange(1, Board.width - 2), random.randrange(1, Board.height - 2))
+            print(list(self.coords) in self.engine.level_manager.current_level["blocked"])
 
         self.eaten = False
