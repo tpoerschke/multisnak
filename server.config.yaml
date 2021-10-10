@@ -1,9 +1,11 @@
+ip: "192.168.178.50"
 port: 10028
-connectionTimeout: 10
+connectionTimeout: 30
 debug: True
 engine:
-  secondsPerLevel: 60
+  secondsPerLevel: 90
   levels: 
+    - blocky
     - level1
     - theSimpleOne
   ticksPerSecond: 10

@@ -39,7 +39,7 @@ class Server(object):
 
         # Bind und Listen
         try:
-            self.serverSocket.bind(("localhost", CONFIG["port"]))
+            self.serverSocket.bind((CONFIG["ip"], CONFIG["port"]))
             self.serverSocket.listen()
         except socket.error as msg:
             print("ERROR " + str(msg))

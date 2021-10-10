@@ -25,7 +25,7 @@ class Engine(object):
         self.food = Food(self.board, self)
 
         # Flag setzen, damit sich die Schlange nicht bewegt (Debug / temporär)
-        if len(self.snake_list) >= 2: self.snake_list[1].frozen = True
+        #if len(self.snake_list) >= 2: self.snake_list[1].frozen = True
             
         #self.input_thread = threading.Thread(target=user_input_mapper, args=(self,))
         self.tick_thread = threading.Thread(target=self.tick)
